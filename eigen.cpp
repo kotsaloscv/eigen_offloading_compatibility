@@ -26,7 +26,7 @@ int main()
     printf("[Host]");
     print_solution(x,DIM);
 
-    #pragma acc data copyin(A,b)
+    #pragma acc data copyin(A[0:DIM*DIM],b[0:DIM*DIM])
     {
         #pragma acc kernels present(A,b)
         {
