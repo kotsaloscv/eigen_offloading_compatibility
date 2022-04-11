@@ -25,9 +25,14 @@ void solve_cuda(MatType *A, VecType *b, int dim)
 }
 
 __device__ 
-void solve_openacc(MatType *A, VecType *b, int dim)
+void solve_offload(MatType *A, VecType *b, int dim)
 {
     VecType x = A->partialPivLu().solve(*b);
+    #if defined(USE_OPENACC)
     printf("[OpenACC]");
+    #endif
+    #if defined(USE_OPENMP)
+    printf("[OpenMP]");
+    #endif
     print_solution(x,dim);
 }

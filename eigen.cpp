@@ -26,14 +26,32 @@ int main()
     printf("[Host]");
     print_solution(x,DIM);
 
-    #pragma acc data copyin(A[0:DIM*DIM],b[0:DIM*DIM])
+    #if defined(USE_OPENACC)
+    #pragma acc data copyin(A[0:DIM*DIM],b[0:DIM])
+    #endif
+    #if defined(USE_OPENMP)
+    #pragma omp target data map(to:A[0:DIM*DIM],b[0:DIM])
+    #endif
     {
+        #if defined(USE_OPENACC)
         #pragma acc kernels present(A,b)
+        #endif
+        #if defined(USE_OPENMP)
+        #pragma omp target
+        #endif
         {
-            solve_openacc(A, b, DIM);
+            solve_offload(A, b, DIM);
+            // We need to wrap it around `omp declare target` or
+            // `acc routine seq` to work!
+            // A->partialPivLu().solve(*b);
         }
 
+        #if defined(USE_OPENACC)
         #pragma acc host_data use_device(A,b)
+        #endif
+        #if defined(USE_OPENMP)
+        #pragma omp target data use_device_ptr(A,b)
+        #endif
         {
             solve_cuda(A, b, DIM);
         }

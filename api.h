@@ -15,5 +15,13 @@ void print_solution(VecType, int);
 
 void solve_cuda(MatType*, VecType*, int);
 
+#if defined(USE_OPENACC)
 #pragma acc routine seq
-void solve_openacc(MatType*, VecType*, int);
+#endif
+#if defined(USE_OPENMP)
+#pragma omp declare target
+#endif
+void solve_offload(MatType*, VecType*, int);
+#if defined(USE_OPENMP)
+#pragma omp end declare target
+#endif
