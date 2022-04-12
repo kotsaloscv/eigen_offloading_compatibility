@@ -1,5 +1,3 @@
-# cmake .. -DCMAKE_CXX_COMPILER=nvc++ -DCMAKE_CUDA_COMPILER=nvcc -DUSE_OPENACC=ON -DUSE_OPENACC=OFF 
-
 cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
 
 project(eigen_offload_proj LANGUAGES CXX CUDA)
